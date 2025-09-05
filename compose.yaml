@@ -1,0 +1,51 @@
+services:
+  master:
+    image: ros:noetic
+    networks:
+      - rosnet
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == notebook
+    environment:
+      - ROS_HOSTNAME=master
+      - ROS_MASTER_URI=http://master:11311
+    command: roscore
+
+  talker:
+    depends_on:
+      - master
+    image: ros:noetic
+    networks:
+      - rosnet
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == raspberry
+    environment:
+      - ROS_HOSTNAME=talker
+      - ROS_MASTER_URI=http://master:11311
+    command: rostopic pub /test std_msgs/String "hello world" -r 1
+
+  listener:
+    depends_on:
+      - master
+    image: ros:noetic
+    networks:
+      - rosnet
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.role == notebook
+    environment:
+      - ROS_HOSTNAME=listener
+      - ROS_MASTER_URI=http://master:11311
+    command: rostopic echo /test
+    
+networks:
+  rosnet:
+    driver: overlay
+    attachable: true
