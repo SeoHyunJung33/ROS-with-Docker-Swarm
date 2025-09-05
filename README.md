@@ -27,26 +27,33 @@ Swarm을 통해 노트북과 라즈베리파이가 연결되고, 서비스가 �
  # 2. Docker Swarm 연결
 #노트북
 $ docker swarm init ⇒ 노트북을 Swarm Manager 노드로 형성한다. 해당 명령어를 실행하면 아래의 사진처럼 만들어진 Swarm에 Worker 노드를 추가하기 위한 명령어가 나오는데 해당 명령어를 복사하여 라즈베리파이에서 실행해야 한다.
+
 <img width="952" height="154" alt="image" src="https://github.com/user-attachments/assets/fb6bd23c-0cb6-42de-a6f5-27221f7d8f60" />
+
 #라즈베리파이
 $ docker swarm join —token <TOKEN> <노트북-IP>:2377 ⇒ 라즈베리파이를 만들어진 Swarm의 Worker 노드로 형성한다. 성공하면 “This node joined a swarm as a worker”라는 출력이 나타난다.
+
 #노트북
 $ docker node ls ⇒ Swarm과 내부 노드들을 확인하는 명령어이다. 아래와 같은 사진처럼 출력된다.
 $ docker node update —label-add role=notebook <노트북 호스트 이름>
 $ docker node update —label-add role=raspberry <라즈베리파이 호스트 이름>
 ⇒ Swarm 내의 각 노드에 라벨을 부여하는 명령어이다. compose.yaml 파일에서 서비스가 배포되는 노드의 라벨과 일치해야 한다.
+
 <img width="1032" height="77" alt="image" src="https://github.com/user-attachments/assets/0898c3c5-ede5-40b0-91d7-15ba37628244" />
 
 # 3. Overlay Network 형성
 
 #노트북
+
 **$ cd ~/docker_ws/comp_file/**
 **$ docker stack deploy —compose-file compose.yaml rosstack** ⇒ 도커 스택을 형성하여 컴포즈 파일에 정의된 노드로 서비스가 배포된다.
 **$ docker stack ls** ⇒ 스택 형성을 확인하는 명령어이다.
 **$ docker service ls** ⇒ 서비스 형성을 확인하는 명령어이다. REPLICAS가 모두 1/1인지 확인한다.
 **$ docker network ls** ⇒ overlay 네트워크가 만들어졌는지 확인한다. 네트워크의 이름은 rosstack_rosnet이다.
 **$ docker network inspect rosstack_rosnet** ⇒ overlay 네트워크 내부 컨테이너들이 잘 연결되었는지 확인한다.
+
 <img width="728" height="285" alt="image" src="https://github.com/user-attachments/assets/2de4b0ef-5a25-4207-bb7d-1a7adb7b919b" />
+
 #라즈베리파이
 **$ docker network ls** ⇒ overlay 네트워크가 만들어졌는지 확인한다.
 **$ docker network inspect rosstack_rosnet** ⇒ overlay 네트워크 내부 컨테이너들이 잘 연결되었는지 확인한다. 
@@ -54,6 +61,7 @@ $ docker node update —label-add role=raspberry <라즈베리파이 호스트 �
 #노트북(다른 터미널에서)
 **$ docker container ps** ⇒ master와 listener 컨테이너가 작동하고 있는지 확인한다.
 **$ docker attach <listener 컨테이너 이름>** ⇒ listener 컨테이너에 접속해서 토픽을 잘 받고 있는지 확인한다.
+
 <img width="1222" height="96" alt="image" src="https://github.com/user-attachments/assets/bd30d5dc-5924-4fa0-ba94-fd45ec02b0ee" />
 
 # 4. 이미지 생성
@@ -85,7 +93,9 @@ $ docker build -t tb3_pc:noetic .**
 #라즈베리파이의 터틀봇 컨테이너
 **$ cd ~/opencr_update/
 $ ./update.sh $OPENCR_PORT $OPENCR_MODEL.opencr** ⇒ opencr 세팅
+
 <img width="2048" height="1112" alt="image" src="https://github.com/user-attachments/assets/a9109b70-2a71-4079-9b7e-1f95048fa786" />
+
 $ cd ~/catkin_ws/
 $ catkin_make
 $ export LDS_MODEL=LDS-02
@@ -95,6 +105,7 @@ $ source /opt/ros/noetic/setup.bash
 $ export TURTLEBOT3_MODEL=burger
 $ source ~/catkin_ws/devel/setup.bash
 $ roslaunch turtlebot3_bringup turtlebot3_robot.launch ⇒ 터틀봇을 작동하기 위한 ROS launch 파일을 실행시킨다.
+
 <img width="2048" height="1990" alt="image" src="https://github.com/user-attachments/assets/ada6cd4b-e56f-4941-80b7-408cdd773ebd" />
 
 ### 노트북에서 teleop 컨테이너를 overlay 네트워크에 연결해 생성
