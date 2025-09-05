@@ -28,18 +28,19 @@ Swarm을 통해 노트북과 라즈베리파이가 연결되고, 서비스가 �
  overlay 네트워크 아래에 있는 컨테이너에서 실행된 ROS 노드들은 이 overlay 네트워크를 통해 토픽을 주고 받을 수 있다.
 
  # 2. Docker Swarm 연결
-#노트북
-$ docker swarm init ⇒ 노트북을 Swarm Manager 노드로 형성한다. 해당 명령어를 실행하면 아래의 사진처럼 만들어진 Swarm에 Worker 노드를 추가하기 위한 명령어가 나오는데 해당 명령어를 복사하여 라즈베리파이에서 실행해야 한다.
+- 노트북
+  - $ docker swarm init ⇒ 노트북을 Swarm Manager 노드로 형성한다. 해당 명령어를 실행하면 아래의 사진처럼 만들어진 Swarm에 Worker 노드를 추가하기 위한 명령어가 나오는데 해당 명령어를 복사하여 라즈베리파이에서 실행해야 한다.
 
 <img width="952" height="154" alt="image" src="https://github.com/user-attachments/assets/fb6bd23c-0cb6-42de-a6f5-27221f7d8f60" />
 
-#라즈베리파이
-$ docker swarm join —token <TOKEN> <노트북-IP>:2377 ⇒ 라즈베리파이를 만들어진 Swarm의 Worker 노드로 형성한다. 성공하면 “This node joined a swarm as a worker”라는 출력이 나타난다.
+- 라즈베리파이
+  - $ docker swarm join —token <TOKEN> <노트북-IP>:2377 ⇒ 라즈베리파이를 만들어진 Swarm의 Worker 노드로 형성한다. 성공하면 “This node joined a swarm as a worker”라는 출력이 나타난다.
 
-#노트북
-$ docker node ls ⇒ Swarm과 내부 노드들을 확인하는 명령어이다. 아래와 같은 사진처럼 출력된다.
-$ docker node update —label-add role=notebook <노트북 호스트 이름>
-$ docker node update —label-add role=raspberry <라즈베리파이 호스트 이름>
+- 노트북
+  - $ docker node ls ⇒ Swarm과 내부 노드들을 확인하는 명령어이다. 아래와 같은 사진처럼 출력된다.
+  - $ docker node update —label-add role=notebook <노트북 호스트 이름>
+  - $ docker node update —label-add role=raspberry <라즈베리파이 호스트 이름>
+  - 
 ⇒ Swarm 내의 각 노드에 라벨을 부여하는 명령어이다. compose.yaml 파일에서 서비스가 배포되는 노드의 라벨과 일치해야 한다.
 
 <img width="1032" height="77" alt="image" src="https://github.com/user-attachments/assets/0898c3c5-ede5-40b0-91d7-15ba37628244" />
