@@ -1,0 +1,35 @@
+FROM ros:noetic
+
+RUN apt update && apt upgrade -y && apt install -y \
+    git \
+    wget \
+    libudev-dev \
+    ros-noetic-rosserial-python \
+    ros-noetic-tf
+
+RUN mkdir -p ~/catkin_ws/src/
+
+WORKDIR /root/catkin_ws/src
+
+RUN git clone -b noetic https://github.com/ROBOTIS-GIT/turtlebot3.git \
+    && git clone -b noetic https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
+    && git clone -b noetic https://github.com/ROBOTIS-GIT/DynamixelSDK.git \
+    && git clone -b noetic https://github.com/ROBOTIS-GIT/ld08_driver.git
+
+WORKDIR /root/catkin_ws/src/turtlebot3
+
+RUN rm -rf turtlebot3_description/ turtlebot3_example/
+
+WORKDIR /root
+
+RUN dpkg --add-architecture armhf \
+    && apt update \
+    && apt install -y libc6:armhf
+
+ENV OPENCR_PORT=/dev/ttyACM0
+
+ENV OPENCR_MODEL=burger_noetic
+
+RUN rm -rf ./opencr_update.tar.bz2 \
+    && wget https://github.com/ROBOTIS-GIT/OpenCR-Binaries/raw/master/turtlebot3/ROS1/latest/opencr_update.tar.bz2 \
+    && tar -xvf opencr_update.tar.bz2
