@@ -1,0 +1,35 @@
+FROM ros:noetic
+
+RUN apt update && apt upgrade -y && apt install -y \
+	git \
+	wget \
+	ros-noetic-joy \
+	ros-noetic-teleop-twist-joy \
+	ros-noetic-teleop-twist-keyboard \
+	ros-noetic-laser-proc \
+	ros-noetic-rgbd-launch \
+	ros-noetic-rosserial-arduino \
+	ros-noetic-rosserial-python \
+	ros-noetic-rosserial-client \
+	ros-noetic-rosserial-msgs \
+	ros-noetic-amcl \
+	ros-noetic-map-server \
+	ros-noetic-move-base \
+	ros-noetic-urdf \
+	ros-noetic-xacro \
+	ros-noetic-compressed-image-transport \
+	ros-noetic-rqt \
+	ros-noetic-rviz \
+	ros-noetic-gmapping \
+	ros-noetic-navigation \
+	ros-noetic-interactive-markers
+
+RUN mkdir -p ~/catkin_ws/src/
+
+WORKDIR /root/catkin_ws/src
+
+RUN git clone -b noetic https://github.com/ROBOTIS-GIT/turtlebot3.git \
+	&& git clone -b noetic https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git \
+	&& git clone -b noetic https://github.com/ROBOTIS-GIT/DynamixelSDK.git
+
+WORKDIR /root/catkin_ws
