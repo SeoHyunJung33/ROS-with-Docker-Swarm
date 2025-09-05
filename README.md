@@ -14,7 +14,7 @@ https://docs.docker.com/manuals/
     - ~/docker_ws/docker_file/Dockerfile: 멘더에서 제공하는 이미지를 Dockerfile로 만들어놓은 것으로 지금은 Dockerfile로 이미지를 만들어서 사용한다. 터틀봇을 동작시키기 위한 패키지와 opencr 패키지가 포함된다.
   - 노트북:
     - ~/docker_ws/comp_file/compose.yaml: Docker Swarm에서 서비스를 배포해 overlay 네트워크를 만드는데 필요하다. ROS master, talker, listener 서비스가 포함된다.
-  - ~/docker_ws/docker_file/Dockerfile: 노트북에서 터틀봇을 조종하기 위한 teleop 패키지와 기타 터틀봇 패키지가 들어있는 이미지의 Dockerfile이다
+    - ~/docker_ws/docker_file/Dockerfile: 노트북에서 터틀봇을 조종하기 위한 teleop 패키지와 기타 터틀봇 패키지가 들어있는 이미지의 Dockerfile이다
 
 <시스템 구조>
 <img width="915" height="514" alt="image" src="https://github.com/user-attachments/assets/d24393be-8e00-4553-a3f6-dda7be05ad51" />
