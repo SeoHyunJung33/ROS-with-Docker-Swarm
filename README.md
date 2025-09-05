@@ -20,8 +20,11 @@ https://docs.docker.com/manuals/
 <img width="915" height="514" alt="image" src="https://github.com/user-attachments/assets/d24393be-8e00-4553-a3f6-dda7be05ad51" />
 
 Swarm을 통해 노트북과 라즈베리파이가 연결되고, 서비스가 배포되면 노트북과 라즈베리파이에 걸쳐서 overlay 네트워크가 형성된다. 
+
 이 overlay 네트워크는 노트북과 라즈베리파이의 컨테이너들이 서로 통신을 할 수 있도록 한다.
+
  overlay 네트워크 아래에 있는 컨테이너에서 ROS가 실행되므로 ROS 네트워크는 overlay 네트워크에 구현된다.
+ 
  overlay 네트워크 아래에 있는 컨테이너에서 실행된 ROS 노드들은 이 overlay 네트워크를 통해 토픽을 주고 받을 수 있다.
 
  # 2. Docker Swarm 연결
