@@ -72,14 +72,14 @@ Swarm을 통해 노트북과 라즈베리파이가 연결되고, 서비스가 �
 ### 라즈베리파이에 터틀봇 이미지 생성
 
 - 라즈베리파이
-  - **$ cd ~/docker_ws/docker_file/
-  - $ docker build -t turtlebot3:noetic .**
+  - **$ cd ~/docker_ws/docker_file/**
+  - **$ docker build -t turtlebot3:noetic .**
 
 ### 노트북에 터틀봇 패키지 이미지 생성
 
 - 노트북
-  - **$ cd ~/docker_ws/docker_file/
-  - $ docker build -t tb3_pc:noetic .**
+  - **$ cd ~/docker_ws/docker_file/**
+  - **$ docker build -t tb3_pc:noetic .**
 
 # 5. 라즈베리파이 터틀봇 컨테이너
 
@@ -94,49 +94,49 @@ Swarm을 통해 노트북과 라즈베리파이가 연결되고, 서비스가 �
 ### 라즈베리파이의 터틀봇 컨테이너에서 터틀봇 세팅
 
 - 라즈베리파이의 터틀봇 컨테이너
-  - **$ cd ~/opencr_update/
-  - $ ./update.sh $OPENCR_PORT $OPENCR_MODEL.opencr** ⇒ opencr 세팅
+  - **$ cd ~/opencr_update/**
+  - **$ ./update.sh $OPENCR_PORT $OPENCR_MODEL.opencr** ⇒ opencr 세팅
 
 <img width="2048" height="1112" alt="image" src="https://github.com/user-attachments/assets/a9109b70-2a71-4079-9b7e-1f95048fa786" />
 
-$ cd ~/catkin_ws/ 
+**$ cd ~/catkin_ws/**
 
-$ catkin_make
+**$ catkin_make**
 
-$ export LDS_MODEL=LDS-02
+**$ export LDS_MODEL=LDS-02**
 
-$ export ROS_MASTER_URI=http://<master-IP>:11311 ⇒ overlay 네트워크에 연결된 마스터 컨테이너의 IP를 사용해야 한다.
+**$ export ROS_MASTER_URI=http://<master-IP>:11311** ⇒ overlay 네트워크에 연결된 마스터 컨테이너의 IP를 사용해야 한다.
 
-$ export ROS_HOSTNAME=<tb3-IP> ⇒ overlay 네트워크에 연결된 터틀봇 컨테이너의 IP를 사용해야 한다.
+**$ export ROS_HOSTNAME=<tb3-IP>** ⇒ overlay 네트워크에 연결된 터틀봇 컨테이너의 IP를 사용해야 한다.
 
-$ source /opt/ros/noetic/setup.bash
+**$ source /opt/ros/noetic/setup.bash**
 
-$ export TURTLEBOT3_MODEL=burger
+**$ export TURTLEBOT3_MODEL=burger**
 
-$ source ~/catkin_ws/devel/setup.bash
+**$ source ~/catkin_ws/devel/setup.bash**
 
-$ roslaunch turtlebot3_bringup turtlebot3_robot.launch ⇒ 터틀봇을 작동하기 위한 ROS launch 파일을 실행시킨다.
+**$ roslaunch turtlebot3_bringup turtlebot3_robot.launch** ⇒ 터틀봇을 작동하기 위한 ROS launch 파일을 실행시킨다.
 
 <img width="2048" height="1990" alt="image" src="https://github.com/user-attachments/assets/ada6cd4b-e56f-4941-80b7-408cdd773ebd" />
 
 ### 노트북에서 teleop 컨테이너를 overlay 네트워크에 연결해 생성
 
 - 노트북
-  - **$ docker run —name teleop —hostname teleop —network rosstack_rosnet -d -it tb3_pc:noetic bash
-  - $ docker network inspect rosstack_rosnet** ⇒ teleop 컨테이너가 overlay 네트워크에 연결되었는지 확인한다.
+  - **$ docker run —name teleop —hostname teleop —network rosstack_rosnet -d -it tb3_pc:noetic bash**
+  - **$ docker network inspect rosstack_rosnet** ⇒ teleop 컨테이너가 overlay 네트워크에 연결되었는지 확인한다.
   - **$ docker attach teleop** ⇒ 컨테이너에 접속한다.
 
 ### 노트북의 teleop 컨테이너에서 teleoperation 세팅
 
 - 노트북의 teleop 컨테이너
-  - $ cd ~/catkin_ws/
-  - $ catkin_make
-  - $ export ROS_MASTER_URI=http://<master-IP>:11311 ⇒ overlay 네트워크에 연결된 마스터 컨테이너의 IP를 사용해야 한다.
+  - **$ cd ~/catkin_ws/**
+  - **$ catkin_make**
+  - **$ export ROS_MASTER_URI=http://<master-IP>:11311** ⇒ overlay 네트워크에 연결된 마스터 컨테이너의 IP를 사용해야 한다.
   - **$ export ROS_HOSTNAME=<teleop-IP>** ⇒ overlay 네트워크에 연결된 teleop 컨테이너의 IP를 사용해야 한다.
-  - $ source /opt/ros/noetic/setup.bash
-  - $ export TURTLEBOT3_MODEL=burger
-  - $ source ~/catkin_ws/devel/setup.bash
-  - $ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch ⇒ 터틀봇을 조종하기 위한 teleoperation launch 파일을 실행시킨다.
+  - **$ source /opt/ros/noetic/setup.bash**
+  - **$ export TURTLEBOT3_MODEL=burger**
+  - **$ source ~/catkin_ws/devel/setup.bash**
+  - **$ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch** ⇒ 터틀봇을 조종하기 위한 teleoperation launch 파일을 실행시킨다.
 
 
 
