@@ -40,31 +40,30 @@ Swarm을 통해 노트북과 라즈베리파이가 연결되고, 서비스가 �
   - $ docker node ls ⇒ Swarm과 내부 노드들을 확인하는 명령어이다. 아래와 같은 사진처럼 출력된다.
   - $ docker node update —label-add role=notebook <노트북 호스트 이름>
   - $ docker node update —label-add role=raspberry <라즈베리파이 호스트 이름>
-  - 
-⇒ Swarm 내의 각 노드에 라벨을 부여하는 명령어이다. compose.yaml 파일에서 서비스가 배포되는 노드의 라벨과 일치해야 한다.
+    ⇒ Swarm 내의 각 노드에 라벨을 부여하는 명령어이다. compose.yaml 파일에서 서비스가 배포되는 노드의 라벨과 일치해야 한다.
 
 <img width="1032" height="77" alt="image" src="https://github.com/user-attachments/assets/0898c3c5-ede5-40b0-91d7-15ba37628244" />
 
 # 3. Overlay Network 형성
 
-#노트북
+- 노트북
 
-**$ cd ~/docker_ws/comp_file/**
-**$ docker stack deploy —compose-file compose.yaml rosstack** ⇒ 도커 스택을 형성하여 컴포즈 파일에 정의된 노드로 서비스가 배포된다.
-**$ docker stack ls** ⇒ 스택 형성을 확인하는 명령어이다.
-**$ docker service ls** ⇒ 서비스 형성을 확인하는 명령어이다. REPLICAS가 모두 1/1인지 확인한다.
-**$ docker network ls** ⇒ overlay 네트워크가 만들어졌는지 확인한다. 네트워크의 이름은 rosstack_rosnet이다.
-**$ docker network inspect rosstack_rosnet** ⇒ overlay 네트워크 내부 컨테이너들이 잘 연결되었는지 확인한다.
+  - **$ cd ~/docker_ws/comp_file/**
+  - **$ docker stack deploy —compose-file compose.yaml rosstack** ⇒ 도커 스택을 형성하여 컴포즈 파일에 정의된 노드로 서비스가 배포된다.
+  - **$ docker stack ls** ⇒ 스택 형성을 확인하는 명령어이다.
+  - **$ docker service ls** ⇒ 서비스 형성을 확인하는 명령어이다. REPLICAS가 모두 1/1인지 확인한다.
+  - **$ docker network ls** ⇒ overlay 네트워크가 만들어졌는지 확인한다. 네트워크의 이름은 rosstack_rosnet이다.
+  - **$ docker network inspect rosstack_rosnet** ⇒ overlay 네트워크 내부 컨테이너들이 잘 연결되었는지 확인한다.
 
 <img width="728" height="285" alt="image" src="https://github.com/user-attachments/assets/2de4b0ef-5a25-4207-bb7d-1a7adb7b919b" />
 
-#라즈베리파이
-**$ docker network ls** ⇒ overlay 네트워크가 만들어졌는지 확인한다.
-**$ docker network inspect rosstack_rosnet** ⇒ overlay 네트워크 내부 컨테이너들이 잘 연결되었는지 확인한다. 
+- 라즈베리파이
+  - **$ docker network ls** ⇒ overlay 네트워크가 만들어졌는지 확인한다.
+  - **$ docker network inspect rosstack_rosnet** ⇒ overlay 네트워크 내부 컨테이너들이 잘 연결되었는지 확인한다. 
 
-#노트북(다른 터미널에서)
-**$ docker container ps** ⇒ master와 listener 컨테이너가 작동하고 있는지 확인한다.
-**$ docker attach <listener 컨테이너 이름>** ⇒ listener 컨테이너에 접속해서 토픽을 잘 받고 있는지 확인한다.
+- 노트북(다른 터미널에서)
+  - **$ docker container ps** ⇒ master와 listener 컨테이너가 작동하고 있는지 확인한다.
+  - **$ docker attach <listener 컨테이너 이름>** ⇒ listener 컨테이너에 접속해서 토픽을 잘 받고 있는지 확인한다.
 
 <img width="1222" height="96" alt="image" src="https://github.com/user-attachments/assets/bd30d5dc-5924-4fa0-ba94-fd45ec02b0ee" />
 
@@ -72,64 +71,72 @@ Swarm을 통해 노트북과 라즈베리파이가 연결되고, 서비스가 �
 
 ### 라즈베리파이에 터틀봇 이미지 생성
 
-#라즈베리파이
-**$ cd ~/docker_ws/docker_file/
-$ docker build -t turtlebot3:noetic .**
+- 라즈베리파이
+  - **$ cd ~/docker_ws/docker_file/
+  - $ docker build -t turtlebot3:noetic .**
 
 ### 노트북에 터틀봇 패키지 이미지 생성
 
-#노트북
-**$ cd ~/docker_ws/docker_file/
-$ docker build -t tb3_pc:noetic .**
+- 노트북
+  - **$ cd ~/docker_ws/docker_file/
+  - $ docker build -t tb3_pc:noetic .**
 
 # 5. 라즈베리파이 터틀봇 컨테이너
 
 ### 라즈베리파이에서 터틀봇 컨테이너를 overlay 네트워크에 연결하여 생성
 
-#라즈베리파이
-**$ docker run —name tb3 —hostname tb3 —device=/dev/ttyACM0:/dev/ttyACM0 —device=/dev/ttyUSB0:/dev/ttyUSB0 —network rosstack_rosnet -d -it turtlebot3:noetic bash**
-⇒ 컨테이너를 만들기 전에 라즈베리파이에서 USB 장치 연결을 확인한다. ($ sudo dmesg | grep tty)
-**$ docker network inspect rosstack_rosnet** ⇒ 터틀봇 컨테이너가 overlay 네트워크에 연결되었는지 확인한다.
-**$ docker attach tb3** ⇒ 컨테이너에 접속
+- 라즈베리파이
+  - **$ docker run —name tb3 —hostname tb3 —device=/dev/ttyACM0:/dev/ttyACM0 —device=/dev/ttyUSB0:/dev/ttyUSB0 —network rosstack_rosnet -d -it turtlebot3:noetic bash**
+    ⇒ 컨테이너를 만들기 전에 라즈베리파이에서 USB 장치 연결을 확인한다. ($ sudo dmesg | grep tty)
+  - **$ docker network inspect rosstack_rosnet** ⇒ 터틀봇 컨테이너가 overlay 네트워크에 연결되었는지 확인한다.
+  - **$ docker attach tb3** ⇒ 컨테이너에 접속
 
 ### 라즈베리파이의 터틀봇 컨테이너에서 터틀봇 세팅
 
-#라즈베리파이의 터틀봇 컨테이너
-**$ cd ~/opencr_update/
-$ ./update.sh $OPENCR_PORT $OPENCR_MODEL.opencr** ⇒ opencr 세팅
+- 라즈베리파이의 터틀봇 컨테이너
+  - **$ cd ~/opencr_update/
+  - $ ./update.sh $OPENCR_PORT $OPENCR_MODEL.opencr** ⇒ opencr 세팅
 
 <img width="2048" height="1112" alt="image" src="https://github.com/user-attachments/assets/a9109b70-2a71-4079-9b7e-1f95048fa786" />
 
-$ cd ~/catkin_ws/
+$ cd ~/catkin_ws/ 
+
 $ catkin_make
+
 $ export LDS_MODEL=LDS-02
+
 $ export ROS_MASTER_URI=http://<master-IP>:11311 ⇒ overlay 네트워크에 연결된 마스터 컨테이너의 IP를 사용해야 한다.
+
 $ export ROS_HOSTNAME=<tb3-IP> ⇒ overlay 네트워크에 연결된 터틀봇 컨테이너의 IP를 사용해야 한다.
+
 $ source /opt/ros/noetic/setup.bash
+
 $ export TURTLEBOT3_MODEL=burger
+
 $ source ~/catkin_ws/devel/setup.bash
+
 $ roslaunch turtlebot3_bringup turtlebot3_robot.launch ⇒ 터틀봇을 작동하기 위한 ROS launch 파일을 실행시킨다.
 
 <img width="2048" height="1990" alt="image" src="https://github.com/user-attachments/assets/ada6cd4b-e56f-4941-80b7-408cdd773ebd" />
 
 ### 노트북에서 teleop 컨테이너를 overlay 네트워크에 연결해 생성
 
-#노트북
-**$ docker run —name teleop —hostname teleop —network rosstack_rosnet -d -it tb3_pc:noetic bash
-$ docker network inspect rosstack_rosnet** ⇒ teleop 컨테이너가 overlay 네트워크에 연결되었는지 확인한다.
-**$ docker attach teleop** ⇒ 컨테이너에 접속한다.
+- 노트북
+  - **$ docker run —name teleop —hostname teleop —network rosstack_rosnet -d -it tb3_pc:noetic bash
+  - $ docker network inspect rosstack_rosnet** ⇒ teleop 컨테이너가 overlay 네트워크에 연결되었는지 확인한다.
+  - **$ docker attach teleop** ⇒ 컨테이너에 접속한다.
 
 ### 노트북의 teleop 컨테이너에서 teleoperation 세팅
 
-#노트북의 teleop 컨테이너
-**$ cd ~/catkin_ws/
-$ catkin_make
-$ export ROS_MASTER_URI=http://<master-IP>:11311** ⇒ overlay 네트워크에 연결된 마스터 컨테이너의 IP를 사용해야 한다.
-**$ export ROS_HOSTNAME=<teleop-IP>** ⇒ overlay 네트워크에 연결된 teleop 컨테이너의 IP를 사용해야 한다.
-**$ source /opt/ros/noetic/setup.bash
-$ export TURTLEBOT3_MODEL=burger
-$ source ~/catkin_ws/devel/setup.bash
-$ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch** ⇒ 터틀봇을 조종하기 위한 teleoperation launch 파일을 실행시킨다.
+- 노트북의 teleop 컨테이너
+  - $ cd ~/catkin_ws/
+  - $ catkin_make
+  - $ export ROS_MASTER_URI=http://<master-IP>:11311 ⇒ overlay 네트워크에 연결된 마스터 컨테이너의 IP를 사용해야 한다.
+  - **$ export ROS_HOSTNAME=<teleop-IP>** ⇒ overlay 네트워크에 연결된 teleop 컨테이너의 IP를 사용해야 한다.
+  - $ source /opt/ros/noetic/setup.bash
+  - $ export TURTLEBOT3_MODEL=burger
+  - $ source ~/catkin_ws/devel/setup.bash
+  - $ roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch ⇒ 터틀봇을 조종하기 위한 teleoperation launch 파일을 실행시킨다.
 
 
 
